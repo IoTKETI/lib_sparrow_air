@@ -10,6 +10,7 @@ global lib_mqtt_client
 global missionPort
 global airQ
 
+airQ = dict()
 
 def on_connect(client,userdata,flags, rc):
     if rc == 0:
@@ -141,7 +142,7 @@ def missionPortData(missionPort):
                 container_name = lib["data"][0]
                 data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
                 airQ = json.dumps(airQ)
-                print ('airQ: \n', airQ)
+                print ('airQ type: \n', type(airQ))
                 send_data_to_msw(data_topic, airQ)
             else:
                 print("The other Data")
@@ -170,7 +171,7 @@ def missionPortData(missionPort):
                     container_name = lib["data"][0]
                     data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
                     airQ = json.dumps(airQ)
-                    print ('airQ: \n', airQ)
+                    print ('airQ type: \n', type(airQ))
                     send_data_to_msw(data_topic, airQ)
 
                     arrAIRQ = missionStr[1].decode("utf-8").split(", ")
@@ -196,7 +197,7 @@ def missionPortData(missionPort):
                     container_name = lib["data"][0]
                     data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
                     airQ = json.dumps(airQ)
-                    print ('airQ: \n', airQ)
+                    print ('airQ type: \n', type(airQ))
                     send_data_to_msw(data_topic, airQ)
                 else:
                     print("One Data")
@@ -223,7 +224,7 @@ def missionPortData(missionPort):
                     container_name = lib["data"][0]
                     data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
                     airQ = json.dumps(airQ)
-                    print ('airQ: \n', airQ)
+                    print ('airQ type: \n', type(airQ))
                     send_data_to_msw(data_topic, airQ)
 
         airQ = dict()
