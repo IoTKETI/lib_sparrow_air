@@ -246,8 +246,8 @@ if __name__ == '__main__':
         lib["target"] = 'armv6'
         lib["description"] = "[name] [portnum] [baudrate]"
         lib["scripts"] = './' + my_lib_name + ' /dev/ttyUSB4 115200'
-        lib["data"] = ['LTE']
-        lib["control"] = []
+        lib["data"] = ['AIR']
+        lib["control"] = ['Control_AIR']
         lib = json.dumps(lib, indent=4)
         lib = json.loads(lib)
 
