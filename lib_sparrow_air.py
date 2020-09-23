@@ -29,16 +29,17 @@ def on_subscribe(client, userdata, mid, granted_qos):
 
 
 def on_message(client, userdata, msg):
-    print('message on lib: ', msg.topic)
-    # print('message on lib: ', str(msg.payload.decode("utf-8")))
+    # print('message on lib: ', msg.topic)
+    print('message on lib: ', str(msg.payload.decode("utf-8")))
     message = str(msg.payload.decode("utf-8"))
     on_receive_from_msw(msg.topic, message)
     
 
 def on_receive_from_msw(topic, str_message):
-    print ('[' + topic + ']' + str_message)
-    print (type(str_message))
-    print (str_message)
+    if missionPort is not None:
+        if missionPort.is_open:
+            setcmd = b'G'
+            missionPort.write(setcmd)
 
 
 def msw_mqtt_connect(broker_ip, port):
@@ -120,7 +121,7 @@ def missionPortData(missionPort):
     while True:
         missionStr = missionPort.readlines()
         print('missionStr\n', missionStr)
-        if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
+        if ((not missionStr) or (missionStr[0] == b'\x00\n')):
             airReqMessage(missionPort)
             flag = 0
         else:
@@ -229,7 +230,7 @@ def missionPortData(missionPort):
                     send_data_to_msw(data_topic, airQ)
 
         airQ = dict()
-        # time.sleep(10)
+        time.sleep(10)
 
 
 if __name__ == '__main__':
