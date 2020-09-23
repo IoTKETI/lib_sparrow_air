@@ -24,10 +24,6 @@ def on_disconnect(client, userdata, flags, rc=0):
 	print(str(rc))
 
 
-def on_publish(client, userdata, mid):
-    print("In on_pub callback mid= ", mid)
-
-
 def on_subscribe(client, userdata, mid, granted_qos):
     print("subscribed: " + str(mid) + " " + str(granted_qos))
 
@@ -54,7 +50,6 @@ def msw_mqtt_connect(broker_ip, port):
     lib_mqtt_client = mqtt.Client()
     lib_mqtt_client.on_connect = on_connect
     lib_mqtt_client.on_disconnect = on_disconnect
-    # lib_mqtt_client.on_publish = on_publish
     lib_mqtt_client.on_subscribe = on_subscribe
     lib_mqtt_client.on_message = on_message
     lib_mqtt_client.connect(broker_ip, port)
@@ -125,7 +120,7 @@ def missionPortData(missionPort):
     while True:
         missionStr = missionPort.readlines()
         print('missionStr\n', missionStr)
-        if ((not missionStr) or (missionStr[0] == b'\x00\n')):
+        if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
             airReqMessage(missionPort)
             flag = 0
         else:
@@ -234,7 +229,7 @@ def missionPortData(missionPort):
                     send_data_to_msw(data_topic, airQ)
 
         airQ = dict()
-        time.sleep(10)
+        # time.sleep(10)
 
 
 if __name__ == '__main__':
