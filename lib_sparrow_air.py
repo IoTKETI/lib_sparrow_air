@@ -37,7 +37,8 @@ def on_subscribe(client, userdata, mid, granted_qos):
 
 
 def on_message(client, userdata, msg):
-    print('message on lib: ', str(msg.payload.decode("utf-8")))
+    print('message on lib: ', msg.topic)
+    # print('message on lib: ', str(msg.payload.decode("utf-8")))
     message = str(msg.payload.decode("utf-8"))
     on_receive_from_msw(msg.topic, message)
     
