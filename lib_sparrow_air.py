@@ -112,7 +112,7 @@ def missionPortError(err):
 def airReqMessage(missionPort):
     if missionPort is not None:
         if missionPort.is_open:
-            setcmd = b'I'
+            setcmd = b'H'
             missionPort.write(setcmd)
 
 def send_data_to_msw (data_topic, obj_data):
