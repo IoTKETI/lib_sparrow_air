@@ -29,16 +29,17 @@ def on_subscribe(client, userdata, mid, granted_qos):
 
 
 def on_message(client, userdata, msg):
-    # print('message on lib: ', msg.topic)
-    print('message on lib: ', str(msg.payload.decode("utf-8")))
+    global missionPort
+
     message = str(msg.payload.decode("utf-8"))
-    on_receive_from_msw(msg.topic, message)
+    if (message == 'G'):
+        on_receive_from_msw(missionPort, message)
     
 
-def on_receive_from_msw(topic, str_message):
+def on_receive_from_msw(missionPort, str_message):
     if missionPort is not None:
         if missionPort.is_open:
-            setcmd = b'G'
+            setcmd = b'%s'.format(str_message)
             missionPort.write(setcmd)
 
 
