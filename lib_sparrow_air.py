@@ -58,6 +58,7 @@ def msw_mqtt_connect(broker_ip, port):
     sub_container_name = lib['control'][0]
     control_topic = '/MUV/control/' + lib['name'] + '/' + sub_container_name
     lib_mqtt_client.subscribe(control_topic, 0) 
+    print ('control_topic\n', control_topic)
     lib_mqtt_client.loop_start()
     return lib_mqtt_client
 
