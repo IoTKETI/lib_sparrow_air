@@ -111,13 +111,11 @@ def missionPortData(missionPort):
     flag = 0
     while True:
         missionStr = missionPort.readlines()
-        print('missionStr\n', missionStr)
         if ((not missionStr) or (missionStr[0] == b'\x00\n')):
             airReqMessage(missionPort)
             flag = 0
         else:
             if (flag == 0):
-                print("First Data")
                 flag = 1
                 arrAIRQ = missionStr[3].decode("utf-8").split(", ")
                 arrQValue = arrAIRQ[0].split(',')
@@ -141,13 +139,9 @@ def missionPortData(missionPort):
                 airQ['SO2_OP2'] = float(arrAIRQ[8]) # (mV)
                 container_name = lib["data"][0]
                 data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
-                airQ = json.dumps(airQ)
-                print ('airQ type: \n', type(airQ))
                 send_data_to_msw(data_topic, airQ)
             else:
-                print("The other Data")
                 if (len(missionStr) > 1):
-                    print("Two Data")
                     arrAIRQ = missionStr[0].decode("utf-8").split(", ")
                     arrQValue = arrAIRQ[0].split(',')
                     airQ['PM2.5'] = float(arrQValue[0]) # (ug/m3)
@@ -170,8 +164,6 @@ def missionPortData(missionPort):
                     airQ['SO2_OP2'] = float(arrAIRQ[8]) # (mV)
                     container_name = lib["data"][0]
                     data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
-                    airQ = json.dumps(airQ)
-                    print ('airQ type: \n', type(airQ))
                     send_data_to_msw(data_topic, airQ)
 
                     arrAIRQ = missionStr[1].decode("utf-8").split(", ")
@@ -196,11 +188,8 @@ def missionPortData(missionPort):
                     airQ['SO2_OP2'] = float(arrAIRQ[8]) # (mV)
                     container_name = lib["data"][0]
                     data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
-                    airQ = json.dumps(airQ)
-                    print ('airQ type: \n', type(airQ))
                     send_data_to_msw(data_topic, airQ)
                 else:
-                    print("One Data")
                     arrAIRQ = missionStr[0].decode("utf-8").split(", ")
                     arrQValue = arrAIRQ[0].split(',')
                     airQ['PM2.5'] = float(arrQValue[0]) # (ug/m3)
@@ -223,8 +212,6 @@ def missionPortData(missionPort):
                     airQ['SO2_OP2'] = float(arrAIRQ[8]) # (mV)
                     container_name = lib["data"][0]
                     data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
-                    airQ = json.dumps(airQ)
-                    print ('airQ type: \n', type(airQ))
                     send_data_to_msw(data_topic, airQ)
 
         airQ = dict()
