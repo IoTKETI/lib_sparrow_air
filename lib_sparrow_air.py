@@ -12,6 +12,24 @@ global airQ
 
 missionPort = None
 airQ = dict()
+airQ['PM2.5'] = 0.0 # (ug/m3)
+airQ['PM10'] = 0.0 # (ug/m3)
+airQ['CO'] = 0.0 # (ppb)
+airQ['NO2'] = 0.0 # (ppb)
+airQ['O3_org'] = 0.0 # (org/ppb)
+airQ['O3_comp'] = 0.0 # (comp/ppb)
+airQ['SO2_org'] = 0.0 # (org/ppb)
+airQ['SO2_comp'] = 0.0 # (comp/ppb)
+airQ['T'] = 0.0 # (C)
+airQ['H'] = 0.0 # (%)
+airQ['NO2_OP1'] = 0 # (mV)
+airQ['NO2_OP2'] = 0 # (mV)
+airQ['O3_OP1'] = 0 # (mV)
+airQ['O3_OP2'] = 0 # (mV)
+airQ['CO_OP1'] = 0 # (mV)
+airQ['CO_OP2'] = 0 # (mV)
+airQ['SO2_OP1'] = 0 # (mV)
+airQ['SO2_OP2'] = 0 # (mV)
 
 def on_connect(client,userdata,flags, rc):
     print('[msw_mqtt_connect] connect to ', broker_ip)
@@ -112,7 +130,7 @@ def missionPortError(err):
 def airReqMessage(missionPort):
     if missionPort is not None:
         if missionPort.is_open:
-            setcmd = b'H'
+            setcmd = b'I'
             missionPort.write(setcmd)
 
 def send_data_to_msw (data_topic, obj_data):
@@ -131,7 +149,7 @@ def missionPortData(missionPort):
         print('missionStr\n', missionStr)
         try:
             if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
-                #airReqMessage(missionPort)
+                # airReqMessage(missionPort)
                 flag = 0
             else:
                 if (flag == 0):
