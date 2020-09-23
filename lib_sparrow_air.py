@@ -15,6 +15,11 @@ airQ = dict()
 def on_connect(client,userdata,flags, rc):
     if rc == 0:
         print('[msw_mqtt_connect] connect to ', broker_ip)
+        sub_container_name = lib['control'][0]
+        control_topic = '/MUV/control/' + lib['name'] + '/' + sub_container_name
+        lib_mqtt_client.subscribe(control_topic, 0) 
+        print ('[lib]control_topic\n', control_topic)
+
     else:
         print("Bad connection Returned code=", rc)
 
@@ -52,14 +57,10 @@ def msw_mqtt_connect(broker_ip, port):
     lib_mqtt_client = mqtt.Client()
     lib_mqtt_client.on_connect = on_connect
     lib_mqtt_client.on_disconnect = on_disconnect
-    lib_mqtt_client.on_publish = on_publish
+    # lib_mqtt_client.on_publish = on_publish
     lib_mqtt_client.on_subscribe = on_subscribe
     lib_mqtt_client.on_message = on_message
     lib_mqtt_client.connect(broker_ip, port)
-    sub_container_name = lib['control'][0]
-    control_topic = '/MUV/control/' + lib['name'] + '/' + sub_container_name
-    lib_mqtt_client.subscribe(control_topic, 0) 
-    print ('[lib]control_topic\n', control_topic)
     lib_mqtt_client.loop_start()
     return lib_mqtt_client
 
