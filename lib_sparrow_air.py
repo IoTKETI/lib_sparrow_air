@@ -32,7 +32,15 @@ def on_subscribe(client, userdata, mid, granted_qos):
 
 
 def on_message(client, userdata, msg):
-    print(str(msg.payload.decode("utf-8")))
+    print('message on lib: ', str(msg.payload.decode("utf-8")))
+    message = str(msg.payload.decode("utf-8"))
+    on_receive_from_msw(msg.topic, message)
+    
+
+def on_receive_from_msw(topic, str_message):
+    print ('[' + topic + ']' + str_message)
+    print (type(str_message))
+    print (str_message)
 
 
 def msw_mqtt_connect(broker_ip, port):
@@ -47,7 +55,9 @@ def msw_mqtt_connect(broker_ip, port):
     lib_mqtt_client.on_publish = on_publish
     lib_mqtt_client.on_message = on_message
     lib_mqtt_client.connect(broker_ip, port)
-    # lib_mqtt_client.subscribe(lib_topic, 0)
+    sub_container_name = lib['control'][0]
+    control_topic = '/MUV/control/' + lib['name'] + '/' + sub_container_name
+    lib_mqtt_client.subscribe(control_topic, 0) 
     lib_mqtt_client.loop_start()
     return lib_mqtt_client
 
