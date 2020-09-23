@@ -53,6 +53,7 @@ def msw_mqtt_connect(broker_ip, port):
     lib_mqtt_client.on_connect = on_connect
     lib_mqtt_client.on_disconnect = on_disconnect
     lib_mqtt_client.on_publish = on_publish
+    lib_mqtt_client.on_subscribe = on_subscribe
     lib_mqtt_client.on_message = on_message
     lib_mqtt_client.connect(broker_ip, port)
     sub_container_name = lib['control'][0]
