@@ -101,6 +101,9 @@ def airReqMessage(missionPort):
             missionPort.write(setcmd)
 
 def send_data_to_msw (data_topic, obj_data):
+    global lib_mqtt_client
+    
+    print(type(obj_data))
     lib_mqtt_client.publish(data_topic, obj_data)
 
 
@@ -111,6 +114,7 @@ def missionPortData(missionPort):
     flag = 0
     while True:
         missionStr = missionPort.readlines()
+        print('missionStr\n', missionStr)
         if ((not missionStr) or (missionStr[0] == b'\x00\n')):
             airReqMessage(missionPort)
             flag = 0
@@ -129,16 +133,17 @@ def missionPortData(missionPort):
                 airQ['SO2_comp'] = float(arrQValue[7]) # (comp/ppb)
                 airQ['T'] = float(arrQValue[8]) # (C)
                 airQ['H'] = float(arrQValue[9]) # (%)
-                airQ['NO2_OP1'] = float(arrAIRQ[1]) # (mV)
-                airQ['NO2_OP2'] = float(arrAIRQ[2]) # (mV)
-                airQ['O3_OP1'] = float(arrAIRQ[3]) # (mV)
-                airQ['O3_OP2'] = float(arrAIRQ[4]) # (mV)
-                airQ['CO_OP1'] = float(arrAIRQ[5]) # (mV)
-                airQ['CO_OP2'] = float(arrAIRQ[6]) # (mV)
-                airQ['SO2_OP1'] = float(arrAIRQ[7]) # (mV)
-                airQ['SO2_OP2'] = float(arrAIRQ[8]) # (mV)
+                airQ['NO2_OP1'] = int(arrAIRQ[1]) # (mV)
+                airQ['NO2_OP2'] = int(arrAIRQ[2]) # (mV)
+                airQ['O3_OP1'] = int(arrAIRQ[3]) # (mV)
+                airQ['O3_OP2'] = int(arrAIRQ[4]) # (mV)
+                airQ['CO_OP1'] = int(arrAIRQ[5]) # (mV)
+                airQ['CO_OP2'] = int(arrAIRQ[6]) # (mV)
+                airQ['SO2_OP1'] = int(arrAIRQ[7]) # (mV)
+                airQ['SO2_OP2'] = int(arrAIRQ[8]) # (mV)
                 container_name = lib["data"][0]
                 data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
+                airQ = json.dumps(airQ)
                 send_data_to_msw(data_topic, airQ)
             else:
                 if (len(missionStr) > 1):
@@ -154,18 +159,20 @@ def missionPortData(missionPort):
                     airQ['SO2_comp'] = float(arrQValue[7]) # (comp/ppb)
                     airQ['T'] = float(arrQValue[8]) # (C)
                     airQ['H'] = float(arrQValue[9]) # (%)
-                    airQ['NO2_OP1'] = float(arrAIRQ[1]) # (mV)
-                    airQ['NO2_OP2'] = float(arrAIRQ[2]) # (mV)
-                    airQ['O3_OP1'] = float(arrAIRQ[3]) # (mV)
-                    airQ['O3_OP2'] = float(arrAIRQ[4]) # (mV)
-                    airQ['CO_OP1'] = float(arrAIRQ[5]) # (mV)
-                    airQ['CO_OP2'] = float(arrAIRQ[6]) # (mV)
-                    airQ['SO2_OP1'] = float(arrAIRQ[7]) # (mV)
-                    airQ['SO2_OP2'] = float(arrAIRQ[8]) # (mV)
+                    airQ['NO2_OP1'] = int(arrAIRQ[1]) # (mV)
+                    airQ['NO2_OP2'] = int(arrAIRQ[2]) # (mV)
+                    airQ['O3_OP1'] = int(arrAIRQ[3]) # (mV)
+                    airQ['O3_OP2'] = int(arrAIRQ[4]) # (mV)
+                    airQ['CO_OP1'] = int(arrAIRQ[5]) # (mV)
+                    airQ['CO_OP2'] = int(arrAIRQ[6]) # (mV)
+                    airQ['SO2_OP1'] = int(arrAIRQ[7]) # (mV)
+                    airQ['SO2_OP2'] = int(arrAIRQ[8]) # (mV)
                     container_name = lib["data"][0]
                     data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
+                    airQ = json.dumps(airQ)
                     send_data_to_msw(data_topic, airQ)
-
+                    
+                    airQ = dict()
                     arrAIRQ = missionStr[1].decode("utf-8").split(", ")
                     arrQValue = arrAIRQ[0].split(',')
                     airQ['PM2.5'] = float(arrQValue[0]) # (ug/m3)
@@ -178,16 +185,17 @@ def missionPortData(missionPort):
                     airQ['SO2_comp'] = float(arrQValue[7]) # (comp/ppb)
                     airQ['T'] = float(arrQValue[8]) # (C)
                     airQ['H'] = float(arrQValue[9]) # (%)
-                    airQ['NO2_OP1'] = float(arrAIRQ[1]) # (mV)
-                    airQ['NO2_OP2'] = float(arrAIRQ[2]) # (mV)
-                    airQ['O3_OP1'] = float(arrAIRQ[3]) # (mV)
-                    airQ['O3_OP2'] = float(arrAIRQ[4]) # (mV)
-                    airQ['CO_OP1'] = float(arrAIRQ[5]) # (mV)
-                    airQ['CO_OP2'] = float(arrAIRQ[6]) # (mV)
-                    airQ['SO2_OP1'] = float(arrAIRQ[7]) # (mV)
-                    airQ['SO2_OP2'] = float(arrAIRQ[8]) # (mV)
+                    airQ['NO2_OP1'] = int(arrAIRQ[1]) # (mV)
+                    airQ['NO2_OP2'] = int(arrAIRQ[2]) # (mV)
+                    airQ['O3_OP1'] = int(arrAIRQ[3]) # (mV)
+                    airQ['O3_OP2'] = int(arrAIRQ[4]) # (mV)
+                    airQ['CO_OP1'] = int(arrAIRQ[5]) # (mV)
+                    airQ['CO_OP2'] = int(arrAIRQ[6]) # (mV)
+                    airQ['SO2_OP1'] = int(arrAIRQ[7]) # (mV)
+                    airQ['SO2_OP2'] = int(arrAIRQ[8]) # (mV)
                     container_name = lib["data"][0]
                     data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
+                    airQ = json.dumps(airQ)
                     send_data_to_msw(data_topic, airQ)
                 else:
                     arrAIRQ = missionStr[0].decode("utf-8").split(", ")
@@ -202,16 +210,17 @@ def missionPortData(missionPort):
                     airQ['SO2_comp'] = float(arrQValue[7]) # (comp/ppb)
                     airQ['T'] = float(arrQValue[8]) # (C)
                     airQ['H'] = float(arrQValue[9]) # (%)
-                    airQ['NO2_OP1'] = float(arrAIRQ[1]) # (mV)
-                    airQ['NO2_OP2'] = float(arrAIRQ[2]) # (mV)
-                    airQ['O3_OP1'] = float(arrAIRQ[3]) # (mV)
-                    airQ['O3_OP2'] = float(arrAIRQ[4]) # (mV)
-                    airQ['CO_OP1'] = float(arrAIRQ[5]) # (mV)
-                    airQ['CO_OP2'] = float(arrAIRQ[6]) # (mV)
-                    airQ['SO2_OP1'] = float(arrAIRQ[7]) # (mV)
-                    airQ['SO2_OP2'] = float(arrAIRQ[8]) # (mV)
+                    airQ['NO2_OP1'] = int(arrAIRQ[1]) # (mV)
+                    airQ['NO2_OP2'] = int(arrAIRQ[2]) # (mV)
+                    airQ['O3_OP1'] = int(arrAIRQ[3]) # (mV)
+                    airQ['O3_OP2'] = int(arrAIRQ[4]) # (mV)
+                    airQ['CO_OP1'] = int(arrAIRQ[5]) # (mV)
+                    airQ['CO_OP2'] = int(arrAIRQ[6]) # (mV)
+                    airQ['SO2_OP1'] = int(arrAIRQ[7]) # (mV)
+                    airQ['SO2_OP2'] = int(arrAIRQ[8]) # (mV)
                     container_name = lib["data"][0]
                     data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
+                    airQ = json.dumps(airQ)
                     send_data_to_msw(data_topic, airQ)
 
         airQ = dict()
