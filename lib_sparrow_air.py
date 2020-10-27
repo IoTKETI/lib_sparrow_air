@@ -141,7 +141,7 @@ def send_data_to_msw (data_topic, obj_data):
 
 def missionPortData(missionPort):
     global airQ
-    airQ = dict()
+    # airQ = dict()
     airReqMessage(missionPort)
     flag = 0
     while True:
@@ -259,7 +259,7 @@ def missionPortData(missionPort):
         except ValueError:
             airReqMessage(missionPort)
             pass
-        airQ = dict()
+        # airQ = dict()
         # time.sleep(10)
 
 
