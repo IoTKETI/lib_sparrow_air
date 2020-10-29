@@ -224,6 +224,9 @@ def missionPortData(missionPort):
         except ValueError:
             airReqMessage(missionPort)
             pass
+        except IndexError:
+            airReqMessage(missionPort)
+            pass
 
 
 if __name__ == '__main__':
