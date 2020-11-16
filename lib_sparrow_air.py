@@ -55,7 +55,7 @@ def on_message(client, userdata, msg):
     if (message == 'G'):
         print ('call on_receive_from_msw function')
         on_receive_from_msw(message)
-
+    
 
 def on_receive_from_msw(str_message):
     global missionPort
@@ -138,7 +138,7 @@ def airReqMessage(missionPort):
 
 def send_data_to_msw (data_topic, obj_data):
     global lib_mqtt_client
-
+    
     lib_mqtt_client.publish(data_topic, obj_data)
 
 
@@ -222,6 +222,9 @@ def missionPortData(missionPort):
                     airQ = json.loads(airQ)
 
         except ValueError:
+            airReqMessage(missionPort)
+            pass
+        except IndexError:
             airReqMessage(missionPort)
             pass
 
