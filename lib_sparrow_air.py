@@ -63,7 +63,8 @@ def on_message(client, userdata, msg):
     global data_topic
     global control_topic
     global con
-
+    print('control: ', str(msg.payload.decode("utf-8")))
+    print('control topic: ', control_topic)
     if msg.topic == control_topic:####################
         con = str(msg.payload.decode("utf-8"))
         print(con)
