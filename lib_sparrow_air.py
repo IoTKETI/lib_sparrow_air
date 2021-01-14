@@ -43,9 +43,7 @@ def airQ_init():
 
 def on_connect(client,userdata,flags, rc):
     print('[msw_mqtt_connect] connect to ', broker_ip)
-    sub_container_name = lib['control'][0]
-    control_topic = '/MUV/control/' + lib['name'] + '/' + sub_container_name
-    lib_mqtt_client.subscribe(control_topic, 0) 
+    lib_mqtt_client.subscribe(control_topic, 0)
     print ('[lib]control_topic\n', control_topic)
 
 
@@ -121,7 +119,6 @@ def missionPortOpening(missionPortNum, missionBaudrate):
             missionPortOpen()
 
             # airQ.rssi = -Math.random()*100;
-            data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
             send_data_to_msw(data_topic, airQ)
 
 def missionPortOpen():
@@ -223,7 +220,6 @@ def missionPortData():
                     airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
                     airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
 
-                    data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
                     airQ = json.dumps(airQ)
                     send_data_to_msw(data_topic, airQ)
                     airQ = json.loads(airQ)
@@ -269,7 +265,6 @@ def missionPortData():
                     airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
                     airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
 
-                    data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
                     airQ = json.dumps(airQ)
                     send_data_to_msw(data_topic, airQ)
                     airQ = json.loads(airQ)
@@ -291,6 +286,8 @@ def main():
     global port
     global air_event
     global con
+    global control_topic
+    global data_topic
 
     my_lib_name = 'lib_sparrow_air'
 
@@ -317,6 +314,9 @@ def main():
 
     lib['serialPortNum'] = argv[1]
     lib['serialBaudrate'] = argv[2]
+
+    control_topic = '/MUV/control/' + lib["name"] + '/' + lib["control"][0]
+    data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
 
     msw_mqtt_connect(broker_ip, port)
 
