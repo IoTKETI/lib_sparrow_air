@@ -61,11 +61,8 @@ def on_message(client, userdata, msg):
     global data_topic
     global control_topic
     global con
-    print('control: ', str(msg.payload.decode("utf-8")))
-    print('control topic: ', control_topic)
     if msg.topic == control_topic:####################
         con = str(msg.payload.decode("utf-8"))
-        print(con)
         air_event |= CONTROL_E
     else:
         air_event |= DATA_E
@@ -327,8 +324,10 @@ def main():
     while True:
         if air_event & CONTROL_E:
             air_event &= (~CONTROL_E)
+            print(con)
             on_receive_from_msw(con)
-        else:
+        elif air_event & DATA_E:
+            air_event &= (~DATA_E)
             missionPortData()
 
 
