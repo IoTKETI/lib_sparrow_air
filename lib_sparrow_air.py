@@ -249,6 +249,7 @@ def main():
     missionPortOpening(missionPortNum, missionBaudrate)
 
     airQ_init()
+    missionPortData()
 
     while True:
         if air_event & CONTROL_E:
