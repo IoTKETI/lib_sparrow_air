@@ -12,7 +12,7 @@ DATA_E = 0x02
 
 control_topic = ''
 data_topic = ''
-req_topic
+req_topic = ''
 
 airQ = {}
 missionPort = None
@@ -68,6 +68,7 @@ def on_message(client, userdata, msg):
 
     if msg.topic == control_topic:
         con = str(msg.payload.decode("utf-8"))
+        # on_receive_from_msw(con)
         air_event |= CONTROL_E
     elif (msg.topic == req_topic):
         air_event |= DATA_E
