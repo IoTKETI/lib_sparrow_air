@@ -14,15 +14,13 @@ control_topic = ''
 data_topic = ''
 
 airQ = {}
+missionPort = None
+con = ''
+
 broker_ip = 'localhost'
 port = 1883
-status = 'init'
-missionPort = None
 
 def airQ_init():
-    global status
-    status = 'init'
-
     airQ['PM25'] = 0.0 # (ug/m3)
     airQ['PM10'] = 0.0 # (ug/m3)
     airQ['CO'] = 0.0 # (ppb)
@@ -64,10 +62,11 @@ def on_message(client, userdata, msg):
     global air_event
     global data_topic
     global control_topic
+    global con
 
-    message = str(msg.payload.decode("utf-8"))
     if msg.topic == control_topic:####################
-        print ('call on_receive_from_msw function')
+        con = str(msg.payload.decode("utf-8"))
+        print(con)
         air_event |= CONTROL_E
     else:
         air_event |= DATA_E
@@ -80,8 +79,8 @@ def on_receive_from_msw(str_message):
     if missionPort is not None:
         print ('missionPort is not None')
         if missionPort.is_open:
-            print ('missionPort is open')
-            setcmd = b'G' ###############
+            print(str_message)
+            setcmd = b'{}'.format(str_message) ###############
             print('setcmd: ', setcmd)
             missionPort.write(setcmd)
 
@@ -104,7 +103,6 @@ def missionPortOpening(missionPortNum, missionBaudrate):
     global airQ
     global lib
     global missionPort
-    global status
 
     if (missionPort == None):
         try:
@@ -114,7 +112,6 @@ def missionPortOpening(missionPortNum, missionBaudrate):
             #     target=missionPortData, args=(missionPort, )
             # )
             # mission_thread.start()
-            status = 'open'
 
         except TypeError as e:
             missionPortClose()
@@ -132,19 +129,13 @@ def missionPortOpen():
 
 def missionPortClose():
     global missionPort
-    global status
     print('missionPort closed!')
-    status = 'close'
-    send_data_to_msw(status)
     missionPort.close()
 
 
 def missionPortError(err):
-    global status
-    status = 'error'
-    send_data_to_msw(status)
     print('[missionPort error]: ', err)
-    # os.kill(i_pid, signal.SIGKILL)
+    os.kill(i_pid, signal.SIGKILL)
 
 def airReqMessage():
     global missionPort
@@ -188,7 +179,6 @@ def missionPortData():
                     flag = 0
 
             else:
-                print('origin: ', missionStr)
                 if (flag == 0):
                     flag = 1
                     # arrAIRQ = missionStr[3].decode("utf-8").split(", ")
@@ -231,8 +221,6 @@ def missionPortData():
                     airQ['CO_OP2'] = int(arrQValue[15])  # (mV)
                     airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
                     airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
-
-                    print('1--airQ: ', airQ)
 
                     data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
                     airQ = json.dumps(airQ)
@@ -280,7 +268,6 @@ def missionPortData():
                     airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
                     airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
 
-                    print('2--airQ: ', airQ)
                     data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
                     airQ = json.dumps(airQ)
                     send_data_to_msw(data_topic, airQ)
@@ -339,7 +326,7 @@ def main():
     while True:
         if air_event & CONTROL_E:
             air_event &= (~CONTROL_E)
-            on_receive_from_msw()
+            on_receive_from_msw(con)
         else:
             missionPortData()
 
