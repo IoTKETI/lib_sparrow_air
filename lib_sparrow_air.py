@@ -8,6 +8,7 @@ argv = sys.argv
 air_event = 0x00
 
 CONTROL_E = 0x01
+DATA_E = 0x02
 
 control_topic = ''
 data_topic = ''
@@ -63,6 +64,9 @@ def on_message(client, userdata, msg):
     if msg.topic == control_topic:
         con = str(msg.payload.decode("utf-8"))
         air_event |= CONTROL_E
+    else:
+        air_event |= DATA_E
+
     
 
 def on_receive_from_msw(str_message):
@@ -155,7 +159,7 @@ def missionPortData():
             # if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
             if ((not missionStr) or (missionStr[0] == b'\x00\n')):
                 if (not missionStr):
-                    if (count < 10):
+                    if (count < 4):
                         count += 1
                         pass
                     else:
@@ -320,7 +324,8 @@ def main():
         if air_event & CONTROL_E:
             air_event &= (~CONTROL_E)
             on_receive_from_msw(con)
-        else:
+        elif air_event & DATA_E:
+            air_event &= (~DATA_E)
             missionPortData()
 
 
