@@ -148,14 +148,13 @@ def missionPortData():
     global airQ
 
     count = 0
-    airReqMessage()
     missionStr = missionPort.readlines()
     print(missionStr)
     try:
         # if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
         if ((not missionStr) or (missionStr[0] == b'\x00\n')):
             if (not missionStr):
-                if (count < 4):
+                if (count < 10):
                     count += 1
                     pass
                 else:
@@ -248,6 +247,7 @@ def main():
     missionPortOpening(missionPortNum, missionBaudrate)
 
     airQ_init()
+    airReqMessage()
 
     while True:
         if air_event & CONTROL_E:
