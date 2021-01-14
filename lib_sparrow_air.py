@@ -61,7 +61,7 @@ def on_message(client, userdata, msg):
     global data_topic
     global control_topic
     global con
-    if msg.topic == control_topic:####################
+    if msg.topic == control_topic:
         con = str(msg.payload.decode("utf-8"))
         air_event |= CONTROL_E
     else:
@@ -150,10 +150,11 @@ def missionPortData():
     global airQ
 
     flag = 0
-    airReqMessage()
+    # airReqMessage()
     count = 0
     while True:
         missionStr = missionPort.readlines()
+        print(missionStr)
         try:
             # if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
             if ((not missionStr) or (missionStr[0] == b'\x00\n')):
@@ -318,6 +319,7 @@ def main():
     missionBaudrate = lib["serialBaudrate"]
     missionPortOpening(missionPortNum, missionBaudrate)
 
+    airReqMessage()
     while True:
         if air_event & CONTROL_E:
             air_event &= (~CONTROL_E)
