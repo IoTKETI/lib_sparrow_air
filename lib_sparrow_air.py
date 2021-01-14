@@ -247,6 +247,8 @@ def main():
     missionBaudrate = lib["serialBaudrate"]
     missionPortOpening(missionPortNum, missionBaudrate)
 
+    airQ_init()
+
     while True:
         if air_event & CONTROL_E:
             air_event &= (~CONTROL_E)
