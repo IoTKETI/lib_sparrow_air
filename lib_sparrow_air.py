@@ -64,8 +64,6 @@ def on_message(client, userdata, msg):
     if msg.topic == control_topic:
         con = str(msg.payload.decode("utf-8"))
         air_event |= CONTROL_E
-    else:
-        air_event |= DATA_E
 
     
 
@@ -152,125 +150,124 @@ def missionPortData():
     flag = 0
     # airReqMessage()
     count = 0
-    while True:
-        missionStr = missionPort.readlines()
-        print(missionStr)
-        try:
-            # if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
-            if ((not missionStr) or (missionStr[0] == b'\x00\n')):
-                if (not missionStr):
-                    if (count < 4):
-                        count += 1
-                        pass
-                    else:
-                        count = 0
-                        airReqMessage()
-                        flag = 0
-
+    missionStr = missionPort.readlines()
+    print(missionStr)
+    try:
+        # if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
+        if ((not missionStr) or (missionStr[0] == b'\x00\n')):
+            if (not missionStr):
+                if (count < 4):
+                    count += 1
+                    pass
                 else:
+                    count = 0
                     airReqMessage()
                     flag = 0
 
             else:
-                if (flag == 0):
-                    flag = 1
-                    # arrAIRQ = missionStr[3].decode("utf-8").split(", ")
-                    # arrQValue = arrAIRQ[0].split(',')
-                    # airQ['PM25'] = float(arrQValue[0]) # (ug/m3)
-                    # airQ['PM10'] = float(arrQValue[1]) # (ug/m3)
-                    # airQ['CO'] = float(arrQValue[2]) # (ppb)
-                    # airQ['NO2'] = float(arrQValue[3]) # (ppb)
-                    # airQ['O3_org'] = float(arrQValue[4]) # (org/ppb)
-                    # airQ['O3_comp'] = float(arrQValue[5]) # (comp/ppb)
-                    # airQ['SO2_org'] = float(arrQValue[6]) # (org/ppb)
-                    # airQ['SO2_comp'] = float(arrQValue[7]) # (comp/ppb)
-                    # airQ['T'] = float(arrQValue[8]) # (C)
-                    # airQ['H'] = float(arrQValue[9]) # (%)
-                    # airQ['NO2_OP1'] = int(arrAIRQ[1]) # (mV)
-                    # airQ['NO2_OP2'] = int(arrAIRQ[2]) # (mV)
-                    # airQ['O3_OP1'] = int(arrAIRQ[3]) # (mV)
-                    # airQ['O3_OP2'] = int(arrAIRQ[4]) # (mV)
-                    # airQ['CO_OP1'] = int(arrAIRQ[5]) # (mV)
-                    # airQ['CO_OP2'] = int(arrAIRQ[6]) # (mV)
-                    # airQ['SO2_OP1'] = int(arrAIRQ[7]) # (mV)
-                    # airQ['SO2_OP2'] = int(arrAIRQ[8]) # (mV)
-                    arrAIRQ = missionStr[3].decode("utf-8").replace(" ","")
-                    arrQValue = arrAIRQ.split(',')
-                    airQ['PM25'] = float(arrQValue[0])  # (ug/m3)
-                    airQ['PM10'] = float(arrQValue[1])  # (ug/m3)
-                    airQ['CO'] = float(arrQValue[2])  # (ppb)
-                    airQ['NO2'] = float(arrQValue[3])  # (ppb)
-                    airQ['O3_org'] = float(arrQValue[4])  # (org/ppb)
-                    airQ['O3_comp'] = float(arrQValue[5])  # (comp/ppb)
-                    airQ['SO2_org'] = float(arrQValue[6])  # (org/ppb)
-                    airQ['SO2_comp'] = float(arrQValue[7])  # (comp/ppb)
-                    airQ['T'] = float(arrQValue[8])  # (C)
-                    airQ['H'] = float(arrQValue[9])  # (%)
-                    airQ['NO2_OP1'] = int(arrQValue[10])  # (mV)
-                    airQ['NO2_OP2'] = int(arrQValue[11])  # (mV)
-                    airQ['O3_OP1'] = int(arrQValue[12])  # (mV)
-                    airQ['O3_OP2'] = int(arrQValue[13])  # (mV)
-                    airQ['CO_OP1'] = int(arrQValue[14])  # (mV)
-                    airQ['CO_OP2'] = int(arrQValue[15])  # (mV)
-                    airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
-                    airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
+                airReqMessage()
+                flag = 0
 
-                    airQ = json.dumps(airQ)
-                    send_data_to_msw(data_topic, airQ)
-                    airQ = json.loads(airQ)
-                else:
-                    # arrAIRQ = missionStr[0].decode("utf-8").split(", ")
-                    # arrQValue = arrAIRQ[0].split(",")
-                    # airQ['PM25'] = float(arrQValue[0]) # (ug/m3)
-                    # airQ['PM10'] = float(arrQValue[1]) # (ug/m3)
-                    # airQ['CO'] = float(arrQValue[2]) # (ppb)
-                    # airQ['NO2'] = float(arrQValue[3]) # (ppb)
-                    # airQ['O3_org'] = float(arrQValue[4]) # (org/ppb)
-                    # airQ['O3_comp'] = float(arrQValue[5]) # (comp/ppb)
-                    # airQ['SO2_org'] = float(arrQValue[6]) # (org/ppb)
-                    # airQ['SO2_comp'] = float(arrQValue[7]) # (comp/ppb)
-                    # airQ['T'] = float(arrQValue[8]) # (C)
-                    # airQ['H'] = float(arrQValue[9]) # (%)
-                    # airQ['NO2_OP1'] = int(arrAIRQ[1]) # (mV)
-                    # airQ['NO2_OP2'] = int(arrAIRQ[2]) # (mV)
-                    # airQ['O3_OP1'] = int(arrAIRQ[3]) # (mV)
-                    # airQ['O3_OP2'] = int(arrAIRQ[4]) # (mV)
-                    # airQ['CO_OP1'] = int(arrAIRQ[5]) # (mV)
-                    # airQ['CO_OP2'] = int(arrAIRQ[6]) # (mV)
-                    # airQ['SO2_OP1'] = int(arrAIRQ[7]) # (mV)
-                    # airQ['SO2_OP2'] = int(arrAIRQ[8]) # (mV)
-                    arrAIRQ = missionStr[0].decode("utf-8").replace(" ", "")
-                    arrQValue = arrAIRQ.split(',')
-                    airQ['PM25'] = float(arrQValue[0])  # (ug/m3)
-                    airQ['PM10'] = float(arrQValue[1])  # (ug/m3)
-                    airQ['CO'] = float(arrQValue[2])  # (ppb)
-                    airQ['NO2'] = float(arrQValue[3])  # (ppb)
-                    airQ['O3_org'] = float(arrQValue[4])  # (org/ppb)
-                    airQ['O3_comp'] = float(arrQValue[5])  # (comp/ppb)
-                    airQ['SO2_org'] = float(arrQValue[6])  # (org/ppb)
-                    airQ['SO2_comp'] = float(arrQValue[7])  # (comp/ppb)
-                    airQ['T'] = float(arrQValue[8])  # (C)
-                    airQ['H'] = float(arrQValue[9])  # (%)
-                    airQ['NO2_OP1'] = int(arrQValue[10])  # (mV)
-                    airQ['NO2_OP2'] = int(arrQValue[11])  # (mV)
-                    airQ['O3_OP1'] = int(arrQValue[12])  # (mV)
-                    airQ['O3_OP2'] = int(arrQValue[13])  # (mV)
-                    airQ['CO_OP1'] = int(arrQValue[14])  # (mV)
-                    airQ['CO_OP2'] = int(arrQValue[15])  # (mV)
-                    airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
-                    airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
+        else:
+            if (flag == 0):
+                flag = 1
+                # arrAIRQ = missionStr[3].decode("utf-8").split(", ")
+                # arrQValue = arrAIRQ[0].split(',')
+                # airQ['PM25'] = float(arrQValue[0]) # (ug/m3)
+                # airQ['PM10'] = float(arrQValue[1]) # (ug/m3)
+                # airQ['CO'] = float(arrQValue[2]) # (ppb)
+                # airQ['NO2'] = float(arrQValue[3]) # (ppb)
+                # airQ['O3_org'] = float(arrQValue[4]) # (org/ppb)
+                # airQ['O3_comp'] = float(arrQValue[5]) # (comp/ppb)
+                # airQ['SO2_org'] = float(arrQValue[6]) # (org/ppb)
+                # airQ['SO2_comp'] = float(arrQValue[7]) # (comp/ppb)
+                # airQ['T'] = float(arrQValue[8]) # (C)
+                # airQ['H'] = float(arrQValue[9]) # (%)
+                # airQ['NO2_OP1'] = int(arrAIRQ[1]) # (mV)
+                # airQ['NO2_OP2'] = int(arrAIRQ[2]) # (mV)
+                # airQ['O3_OP1'] = int(arrAIRQ[3]) # (mV)
+                # airQ['O3_OP2'] = int(arrAIRQ[4]) # (mV)
+                # airQ['CO_OP1'] = int(arrAIRQ[5]) # (mV)
+                # airQ['CO_OP2'] = int(arrAIRQ[6]) # (mV)
+                # airQ['SO2_OP1'] = int(arrAIRQ[7]) # (mV)
+                # airQ['SO2_OP2'] = int(arrAIRQ[8]) # (mV)
+                arrAIRQ = missionStr[3].decode("utf-8").replace(" ","")
+                arrQValue = arrAIRQ.split(',')
+                airQ['PM25'] = float(arrQValue[0])  # (ug/m3)
+                airQ['PM10'] = float(arrQValue[1])  # (ug/m3)
+                airQ['CO'] = float(arrQValue[2])  # (ppb)
+                airQ['NO2'] = float(arrQValue[3])  # (ppb)
+                airQ['O3_org'] = float(arrQValue[4])  # (org/ppb)
+                airQ['O3_comp'] = float(arrQValue[5])  # (comp/ppb)
+                airQ['SO2_org'] = float(arrQValue[6])  # (org/ppb)
+                airQ['SO2_comp'] = float(arrQValue[7])  # (comp/ppb)
+                airQ['T'] = float(arrQValue[8])  # (C)
+                airQ['H'] = float(arrQValue[9])  # (%)
+                airQ['NO2_OP1'] = int(arrQValue[10])  # (mV)
+                airQ['NO2_OP2'] = int(arrQValue[11])  # (mV)
+                airQ['O3_OP1'] = int(arrQValue[12])  # (mV)
+                airQ['O3_OP2'] = int(arrQValue[13])  # (mV)
+                airQ['CO_OP1'] = int(arrQValue[14])  # (mV)
+                airQ['CO_OP2'] = int(arrQValue[15])  # (mV)
+                airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
+                airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
 
-                    airQ = json.dumps(airQ)
-                    send_data_to_msw(data_topic, airQ)
-                    airQ = json.loads(airQ)
+                airQ = json.dumps(airQ)
+                send_data_to_msw(data_topic, airQ)
+                airQ = json.loads(airQ)
+            else:
+                # arrAIRQ = missionStr[0].decode("utf-8").split(", ")
+                # arrQValue = arrAIRQ[0].split(",")
+                # airQ['PM25'] = float(arrQValue[0]) # (ug/m3)
+                # airQ['PM10'] = float(arrQValue[1]) # (ug/m3)
+                # airQ['CO'] = float(arrQValue[2]) # (ppb)
+                # airQ['NO2'] = float(arrQValue[3]) # (ppb)
+                # airQ['O3_org'] = float(arrQValue[4]) # (org/ppb)
+                # airQ['O3_comp'] = float(arrQValue[5]) # (comp/ppb)
+                # airQ['SO2_org'] = float(arrQValue[6]) # (org/ppb)
+                # airQ['SO2_comp'] = float(arrQValue[7]) # (comp/ppb)
+                # airQ['T'] = float(arrQValue[8]) # (C)
+                # airQ['H'] = float(arrQValue[9]) # (%)
+                # airQ['NO2_OP1'] = int(arrAIRQ[1]) # (mV)
+                # airQ['NO2_OP2'] = int(arrAIRQ[2]) # (mV)
+                # airQ['O3_OP1'] = int(arrAIRQ[3]) # (mV)
+                # airQ['O3_OP2'] = int(arrAIRQ[4]) # (mV)
+                # airQ['CO_OP1'] = int(arrAIRQ[5]) # (mV)
+                # airQ['CO_OP2'] = int(arrAIRQ[6]) # (mV)
+                # airQ['SO2_OP1'] = int(arrAIRQ[7]) # (mV)
+                # airQ['SO2_OP2'] = int(arrAIRQ[8]) # (mV)
+                arrAIRQ = missionStr[0].decode("utf-8").replace(" ", "")
+                arrQValue = arrAIRQ.split(',')
+                airQ['PM25'] = float(arrQValue[0])  # (ug/m3)
+                airQ['PM10'] = float(arrQValue[1])  # (ug/m3)
+                airQ['CO'] = float(arrQValue[2])  # (ppb)
+                airQ['NO2'] = float(arrQValue[3])  # (ppb)
+                airQ['O3_org'] = float(arrQValue[4])  # (org/ppb)
+                airQ['O3_comp'] = float(arrQValue[5])  # (comp/ppb)
+                airQ['SO2_org'] = float(arrQValue[6])  # (org/ppb)
+                airQ['SO2_comp'] = float(arrQValue[7])  # (comp/ppb)
+                airQ['T'] = float(arrQValue[8])  # (C)
+                airQ['H'] = float(arrQValue[9])  # (%)
+                airQ['NO2_OP1'] = int(arrQValue[10])  # (mV)
+                airQ['NO2_OP2'] = int(arrQValue[11])  # (mV)
+                airQ['O3_OP1'] = int(arrQValue[12])  # (mV)
+                airQ['O3_OP2'] = int(arrQValue[13])  # (mV)
+                airQ['CO_OP1'] = int(arrQValue[14])  # (mV)
+                airQ['CO_OP2'] = int(arrQValue[15])  # (mV)
+                airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
+                airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
 
-        except (ValueError, IndexError):
-            airQ_init()
-            airReqMessage()
-            pass
+                airQ = json.dumps(airQ)
+                send_data_to_msw(data_topic, airQ)
+                airQ = json.loads(airQ)
 
-        except serial.SerialException as e:
-            missionPortError(e)
+    except (ValueError, IndexError):
+        airQ_init()
+        airReqMessage()
+        pass
+
+    except serial.SerialException as e:
+        missionPortError(e)
 
 
 def main():
@@ -324,8 +321,7 @@ def main():
         if air_event & CONTROL_E:
             air_event &= (~CONTROL_E)
             on_receive_from_msw(con)
-        elif air_event & DATA_E:
-            air_event &= (~DATA_E)
+        else:
             missionPortData()
 
 
