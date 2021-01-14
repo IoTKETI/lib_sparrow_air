@@ -69,11 +69,10 @@ def on_message(client, userdata, msg):
 
 def on_receive_from_msw(str_message):
     global missionPort
-    if missionPort is not None:
-        if missionPort.is_open:
-            setcmd = b'G'
-            print('setcmd: ', str_message)
-            missionPort.write(setcmd)
+
+    setcmd = b'G'
+    print('setcmd: ', str_message)
+    missionPort.write(setcmd)
 
 
 def msw_mqtt_connect(broker_ip, port):
