@@ -313,7 +313,7 @@ def main():
     control_topic = '/MUV/control/' + lib["name"] + '/' + lib["control"][0]
     data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
 
-    msw_mqtt_connect(broker_ip, port)
+    msw_mqtt_connect()
 
     missionPortNum = lib["serialPortNum"]
     missionBaudrate = lib["serialBaudrate"]
