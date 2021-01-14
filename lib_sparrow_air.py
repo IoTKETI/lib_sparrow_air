@@ -71,13 +71,10 @@ def on_message(client, userdata, msg):
 
 def on_receive_from_msw(str_message):
     global missionPort
-    print ('start on_receive_from_msw function')
     if missionPort is not None:
-        print ('missionPort is not None')
         if missionPort.is_open:
-            print(str_message)
-            setcmd = b'{}'.format(str_message) ###############
-            print('setcmd: ', setcmd)
+            setcmd = b'G'
+            print('setcmd: ', str_message)
             missionPort.write(setcmd)
 
 
@@ -324,7 +321,6 @@ def main():
     while True:
         if air_event & CONTROL_E:
             air_event &= (~CONTROL_E)
-            print(con)
             on_receive_from_msw(con)
         elif air_event & DATA_E:
             air_event &= (~DATA_E)
