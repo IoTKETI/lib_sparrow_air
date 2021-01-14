@@ -69,10 +69,12 @@ def on_message(client, userdata, msg):
 
 def on_receive_from_msw(str_message):
     global missionPort
-
-    setcmd = b'G'
-    # print('setcmd: ', str_message)
-    missionPort.write(setcmd)
+    
+    if missionPort is not None:
+        if missionPort.is_open:
+            setcmd = b'G'
+            print('setcmd: ', str_message)
+            missionPort.write(setcmd)
 
 
 def msw_mqtt_connect(broker_ip, port):
@@ -129,7 +131,6 @@ def airReqMessage():
         if missionPort.is_open:
             setcmd = b'I'
             missionPort.write(setcmd)
-            flag = 0
 
 
 def send_data_to_msw (data_topic, obj_data):
@@ -144,68 +145,72 @@ def missionPortData():
     global count
     global data_topic
 
-    airReqMessage()
     missionStr = missionPort.readlines()
-    print('origin: ', missionStr)
+    print('\norigin: ', missionStr)
     try:
         if ((not missionStr) or (missionStr[0] == b'\x00\n')):
-            airReqMessage()
-
-            missionStr = missionPort.readlines()
-            print('origin: ', missionStr)
-
-            arrAIRQ = missionStr[3].decode("utf-8").replace(" ", "")
-            arrQValue = arrAIRQ.split(',')
-            airQ['PM25'] = float(arrQValue[0])  # (ug/m3)
-            airQ['PM10'] = float(arrQValue[1])  # (ug/m3)
-            airQ['CO'] = float(arrQValue[2])  # (ppb)
-            airQ['NO2'] = float(arrQValue[3])  # (ppb)
-            airQ['O3_org'] = float(arrQValue[4])  # (org/ppb)
-            airQ['O3_comp'] = float(arrQValue[5])  # (comp/ppb)
-            airQ['SO2_org'] = float(arrQValue[6])  # (org/ppb)
-            airQ['SO2_comp'] = float(arrQValue[7])  # (comp/ppb)
-            airQ['T'] = float(arrQValue[8])  # (C)
-            airQ['H'] = float(arrQValue[9])  # (%)
-            airQ['NO2_OP1'] = int(arrQValue[10])  # (mV)
-            airQ['NO2_OP2'] = int(arrQValue[11])  # (mV)
-            airQ['O3_OP1'] = int(arrQValue[12])  # (mV)
-            airQ['O3_OP2'] = int(arrQValue[13])  # (mV)
-            airQ['CO_OP1'] = int(arrQValue[14])  # (mV)
-            airQ['CO_OP2'] = int(arrQValue[15])  # (mV)
-            airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
-            airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
-
             airQ = json.dumps(airQ)
-            send_data_to_msw(data_topic, airQ)
-            print('airQ: ', missionStr)
+            # send_data_to_msw(data_topic, airQ)
+            # print('\neeeee-airQ: ', airQ)
             airQ = json.loads(airQ)
+            count += 1
+            if (count < 20):
+                count = 0
+                airReqMessage()
 
         else:
-            arrAIRQ = missionStr[3].decode("utf-8").replace(" ","")
-            arrQValue = arrAIRQ.split(',')
-            airQ['PM25'] = float(arrQValue[0])  # (ug/m3)
-            airQ['PM10'] = float(arrQValue[1])  # (ug/m3)
-            airQ['CO'] = float(arrQValue[2])  # (ppb)
-            airQ['NO2'] = float(arrQValue[3])  # (ppb)
-            airQ['O3_org'] = float(arrQValue[4])  # (org/ppb)
-            airQ['O3_comp'] = float(arrQValue[5])  # (comp/ppb)
-            airQ['SO2_org'] = float(arrQValue[6])  # (org/ppb)
-            airQ['SO2_comp'] = float(arrQValue[7])  # (comp/ppb)
-            airQ['T'] = float(arrQValue[8])  # (C)
-            airQ['H'] = float(arrQValue[9])  # (%)
-            airQ['NO2_OP1'] = int(arrQValue[10])  # (mV)
-            airQ['NO2_OP2'] = int(arrQValue[11])  # (mV)
-            airQ['O3_OP1'] = int(arrQValue[12])  # (mV)
-            airQ['O3_OP2'] = int(arrQValue[13])  # (mV)
-            airQ['CO_OP1'] = int(arrQValue[14])  # (mV)
-            airQ['CO_OP2'] = int(arrQValue[15])  # (mV)
-            airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
-            airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
+            if (missionStr[0] == b'\n'):
+                arrAIRQ = missionStr[3].decode("utf-8").replace(" ","")
+                arrQValue = arrAIRQ.split(',')
+                airQ['PM25'] = float(arrQValue[0])  # (ug/m3)
+                airQ['PM10'] = float(arrQValue[1])  # (ug/m3)
+                airQ['CO'] = float(arrQValue[2])  # (ppb)
+                airQ['NO2'] = float(arrQValue[3])  # (ppb)
+                airQ['O3_org'] = float(arrQValue[4])  # (org/ppb)
+                airQ['O3_comp'] = float(arrQValue[5])  # (comp/ppb)
+                airQ['SO2_org'] = float(arrQValue[6])  # (org/ppb)
+                airQ['SO2_comp'] = float(arrQValue[7])  # (comp/ppb)
+                airQ['T'] = float(arrQValue[8])  # (C)
+                airQ['H'] = float(arrQValue[9])  # (%)
+                airQ['NO2_OP1'] = int(arrQValue[10])  # (mV)
+                airQ['NO2_OP2'] = int(arrQValue[11])  # (mV)
+                airQ['O3_OP1'] = int(arrQValue[12])  # (mV)
+                airQ['O3_OP2'] = int(arrQValue[13])  # (mV)
+                airQ['CO_OP1'] = int(arrQValue[14])  # (mV)
+                airQ['CO_OP2'] = int(arrQValue[15])  # (mV)
+                airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
+                airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
 
-            airQ = json.dumps(airQ)
-            send_data_to_msw(data_topic, airQ)
-            print('airQ: ', missionStr)
-            airQ = json.loads(airQ)
+                airQ = json.dumps(airQ)
+                send_data_to_msw(data_topic, airQ)
+                # print('\n1-airQ: ', airQ)
+                airQ = json.loads(airQ)
+            else:
+                arrAIRQ = missionStr[0].decode("utf-8").replace(" ","")
+                arrQValue = arrAIRQ.split(',')
+                airQ['PM25'] = float(arrQValue[0])  # (ug/m3)
+                airQ['PM10'] = float(arrQValue[1])  # (ug/m3)
+                airQ['CO'] = float(arrQValue[2])  # (ppb)
+                airQ['NO2'] = float(arrQValue[3])  # (ppb)
+                airQ['O3_org'] = float(arrQValue[4])  # (org/ppb)
+                airQ['O3_comp'] = float(arrQValue[5])  # (comp/ppb)
+                airQ['SO2_org'] = float(arrQValue[6])  # (org/ppb)
+                airQ['SO2_comp'] = float(arrQValue[7])  # (comp/ppb)
+                airQ['T'] = float(arrQValue[8])  # (C)
+                airQ['H'] = float(arrQValue[9])  # (%)
+                airQ['NO2_OP1'] = int(arrQValue[10])  # (mV)
+                airQ['NO2_OP2'] = int(arrQValue[11])  # (mV)
+                airQ['O3_OP1'] = int(arrQValue[12])  # (mV)
+                airQ['O3_OP2'] = int(arrQValue[13])  # (mV)
+                airQ['CO_OP1'] = int(arrQValue[14])  # (mV)
+                airQ['CO_OP2'] = int(arrQValue[15])  # (mV)
+                airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
+                airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
+
+                airQ = json.dumps(airQ)
+                send_data_to_msw(data_topic, airQ)
+                # print('\n2222-airQ: ', airQ)
+                airQ = json.loads(airQ)
 
 
     except (ValueError, IndexError):
@@ -264,12 +269,16 @@ def main():
     missionPortOpening(missionPortNum, missionBaudrate)
 
     airQ_init()
+    airReqMessage()
     missionPortData()
 
     while True:
         if air_event & CONTROL_E:
             air_event &= (~CONTROL_E)
-            on_receive_from_msw(con)
+            # on_receive_from_msw(con)
+            setcmd = b'G'
+            missionPort.write(setcmd)
+            print(con)
         else:
             missionPortData()
 

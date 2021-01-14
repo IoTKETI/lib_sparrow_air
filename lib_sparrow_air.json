@@ -6,5 +6,7 @@
     "data": [
         "AIR"
     ],
-    "control": ["Control_AIR"]
+    "control": [
+        "Control_AIR", "Req_AIR"
+    ]
 }
