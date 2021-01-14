@@ -64,18 +64,14 @@ def on_message(client, userdata, msg):
 
     if msg.topic == control_topic:
         con = str(msg.payload.decode("utf-8"))
-        print(con)
-        if (con == 'G'):
-            air_event |= CONTROL_E
-        elif (con == '1'):
-            air_event |= DATA_E
+        air_event |= CONTROL_E
     
 
 def on_receive_from_msw(str_message):
     global missionPort
 
     setcmd = b'G'
-    print('setcmd: ', str_message)
+    # print('setcmd: ', str_message)
     missionPort.write(setcmd)
 
 
@@ -274,8 +270,7 @@ def main():
         if air_event & CONTROL_E:
             air_event &= (~CONTROL_E)
             on_receive_from_msw(con)
-        elif air_event & DATA_E:
-            air_event &= (~DATA_E)
+        else:
             missionPortData()
 
 
