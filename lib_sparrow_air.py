@@ -14,7 +14,8 @@ control_topic = ''
 data_topic = ''
 
 airQ = {}
-
+broker_ip = 'localhost'
+port = 1883
 status = 'init'
 missionPort = None
 
@@ -295,7 +296,8 @@ def main():
     global lib
     global lib_mqtt_client
     global req_topic
-
+    global broker_ip
+    global port
     global air_event
     global con
 
@@ -324,9 +326,6 @@ def main():
 
     lib['serialPortNum'] = argv[1]
     lib['serialBaudrate'] = argv[2]
-
-    broker_ip = 'localhost'
-    port = 1883
 
     msw_mqtt_connect(broker_ip, port)
 
