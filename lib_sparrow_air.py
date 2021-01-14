@@ -58,9 +58,9 @@ def on_subscribe(client, userdata, mid, granted_qos):
 def on_message(client, userdata, msg):
     global missionPort
     global air_event
-    global data_topic
     global control_topic
     global con
+
     if msg.topic == control_topic:
         con = str(msg.payload.decode("utf-8"))
         air_event |= CONTROL_E
@@ -69,11 +69,10 @@ def on_message(client, userdata, msg):
 
 def on_receive_from_msw(str_message):
     global missionPort
-    if missionPort is not None:
-        if missionPort.is_open:
-            setcmd = b'G'
-            print('setcmd: ', str_message)
-            missionPort.write(setcmd)
+
+    setcmd = b'G'
+    print('setcmd: ', str_message)
+    missionPort.write(setcmd)
 
 
 def msw_mqtt_connect(broker_ip, port):
@@ -99,10 +98,6 @@ def missionPortOpening(missionPortNum, missionBaudrate):
         try:
             missionPort = serial.Serial(missionPortNum, missionBaudrate, timeout = 2)
             print ('missionPort open. ' + missionPortNum + ' Data rate: ' + missionBaudrate)
-            # mission_thread = threading.Thread(
-            #     target=missionPortData, args=(missionPort, )
-            # )
-            # mission_thread.start()
 
         except TypeError as e:
             missionPortClose()
@@ -152,18 +147,10 @@ def missionPortData():
     missionStr = missionPort.readlines()
     print(missionStr)
     try:
-        # if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
-        if ((not missionStr) or (missionStr[0] == b'\x00\n')):
-            if (not missionStr):
-                if (count < 4):
-                    count += 1
-                    pass
-                else:
-                    count = 0
-                    airReqMessage()
-
-            else:
-                airReqMessage()
+        if (not missionStr):
+            airReqMessage()
+        elif (missionStr[0] == b'\x00\n'):
+            airReqMessage()
 
         else:
             arrAIRQ = missionStr[3].decode("utf-8").replace(" ","")
@@ -190,7 +177,6 @@ def missionPortData():
             airQ = json.dumps(airQ)
             send_data_to_msw(data_topic, airQ)
             airQ = json.loads(airQ)
-
 
     except (ValueError, IndexError):
         airQ_init()
