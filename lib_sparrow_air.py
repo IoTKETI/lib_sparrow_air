@@ -12,6 +12,7 @@ DATA_E = 0x02
 
 control_topic = ''
 data_topic = ''
+req_topic
 
 airQ = {}
 missionPort = None
@@ -45,6 +46,8 @@ def on_connect(client,userdata,flags, rc):
     print('[msw_mqtt_connect] connect to ', broker_ip)
     lib_mqtt_client.subscribe(control_topic, 0)
     print ('[lib]control_topic\n', control_topic)
+    lib_mqtt_client.subscribe(req_topic, 0)
+    print ('[lib]req_topic\n', req_topic)
 
 
 def on_disconnect(client, userdata, flags, rc=0):
@@ -60,12 +63,15 @@ def on_message(client, userdata, msg):
     global air_event
     global data_topic
     global control_topic
+    global req_topic
     global con
 
     if msg.topic == control_topic:
         con = str(msg.payload.decode("utf-8"))
         air_event |= CONTROL_E
-    
+    elif (msg.topic == req_topic):
+        air_event |= DATA_E
+
 
 def on_receive_from_msw(str_message):
     global missionPort
@@ -231,6 +237,7 @@ def main():
     global air_event
     global con
     global control_topic
+    global req_topic
     global data_topic
 
     my_lib_name = 'lib_sparrow_air'
@@ -248,7 +255,7 @@ def main():
         lib["description"] = "[name] [portnum] [baudrate]"
         lib["scripts"] = './' + my_lib_name + ' /dev/ttyUSB3 115200'
         lib["data"] = ['AIR']
-        lib["control"] = ['Control_AIR']
+        lib["control"] = ['Control_AIR', 'Req_AIR']
         lib = json.dumps(lib, indent=4)
         lib = json.loads(lib)
 
@@ -260,6 +267,7 @@ def main():
     lib['serialBaudrate'] = argv[2]
 
     control_topic = '/MUV/control/' + lib["name"] + '/' + lib["control"][0]
+    req_topic = '/MUV/control/' + lib["name"] + '/' + lib["control"][1]
     data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
 
     msw_mqtt_connect(broker_ip, port)
@@ -279,7 +287,8 @@ def main():
             setcmd = b'G'
             missionPort.write(setcmd)
             print(con)
-        else:
+        elif (air_event & DATA_E):
+            air_event &= (~DATA_E)
             missionPortData()
 
 
