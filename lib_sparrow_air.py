@@ -150,7 +150,7 @@ def missionPortData():
 
     airReqMessage()
     missionStr = missionPort.readlines()
-    print(missionStr)
+    print('origin: ', missionStr)
     try:
         if ((not missionStr) or (missionStr[0] == b'\x00\n')):
             if (not missionStr):
@@ -165,6 +165,7 @@ def missionPortData():
                 airReqMessage()
 
         else:
+
             arrAIRQ = missionStr[3].decode("utf-8").replace(" ","")
             arrQValue = arrAIRQ.split(',')
             airQ['PM25'] = float(arrQValue[0])  # (ug/m3)
@@ -188,6 +189,7 @@ def missionPortData():
 
             airQ = json.dumps(airQ)
             send_data_to_msw(data_topic, airQ)
+            print('airQ: ', missionStr)
             airQ = json.loads(airQ)
 
 
@@ -254,7 +256,6 @@ def main():
             air_event &= (~CONTROL_E)
             on_receive_from_msw(con)
         elif air_event & DATA_E:
-            print(air_event)
             air_event &= (~DATA_E)
             missionPortData()
 
