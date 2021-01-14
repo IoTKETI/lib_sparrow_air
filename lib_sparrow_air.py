@@ -154,7 +154,16 @@ def missionPortData():
     try:
         # if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
         if ((not missionStr) or (missionStr[0] == b'\x00\n')):
-            airReqMessage()
+            if (not missionStr):
+                if (count < 4):
+                    count += 1
+                    pass
+                else:
+                    count = 0
+                    airReqMessage()
+
+            else:
+                airReqMessage()
 
         else:
             arrAIRQ = missionStr[3].decode("utf-8").replace(" ","")
