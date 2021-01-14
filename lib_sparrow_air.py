@@ -281,7 +281,8 @@ def missionPortData():
 
 def main():
     global lib_mqtt_client
-    global req_topic
+    global control_topic
+    global data_topic
     global broker_ip
     global port
 
