@@ -64,6 +64,7 @@ def on_message(client, userdata, msg):
 
     if msg.topic == control_topic:
         con = str(msg.payload.decode("utf-8"))
+        print(con)
         if (con == 'G'):
             air_event |= CONTROL_E
         elif (con == '1'):
@@ -101,10 +102,6 @@ def missionPortOpening(missionPortNum, missionBaudrate):
         try:
             missionPort = serial.Serial(missionPortNum, missionBaudrate, timeout = 2)
             print ('missionPort open. ' + missionPortNum + ' Data rate: ' + missionBaudrate)
-            # mission_thread = threading.Thread(
-            #     target=missionPortData, args=(missionPort, )
-            # )
-            # mission_thread.start()
 
         except TypeError as e:
             missionPortClose()
@@ -257,6 +254,7 @@ def main():
             air_event &= (~CONTROL_E)
             on_receive_from_msw(con)
         elif air_event & DATA_E:
+            print(air_event)
             air_event &= (~DATA_E)
             missionPortData()
 
