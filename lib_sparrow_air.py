@@ -316,12 +316,12 @@ def main():
     missionBaudrate = lib["serialBaudrate"]
     missionPortOpening(missionPortNum, missionBaudrate)
 
-    airReqMessage()
     while True:
         if air_event & CONTROL_E:
             air_event &= (~CONTROL_E)
             on_receive_from_msw(con)
         else:
+            airReqMessage()
             missionPortData()
 
 
