@@ -149,6 +149,7 @@ def missionPortData():
     global missionPort
     global airQ
     global count
+    global data_topic
 
     airReqMessage()
     missionStr = missionPort.readlines()
