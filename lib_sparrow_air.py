@@ -171,7 +171,6 @@ def missionPortData():
     count = 0
     while True:
         missionStr = missionPort.readlines()
-        print('missionStr\n', missionStr)
         try:
             # if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
             if ((not missionStr) or (missionStr[0] == b'\x00\n')):
@@ -189,6 +188,7 @@ def missionPortData():
                     flag = 0
 
             else:
+                print('origin: ', missionStr)
                 if (flag == 0):
                     flag = 1
                     # arrAIRQ = missionStr[3].decode("utf-8").split(", ")
@@ -231,6 +231,8 @@ def missionPortData():
                     airQ['CO_OP2'] = int(arrQValue[15])  # (mV)
                     airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
                     airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
+
+                    print('1--airQ: ', airQ)
 
                     data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
                     airQ = json.dumps(airQ)
@@ -278,6 +280,7 @@ def missionPortData():
                     airQ['SO2_OP1'] = int(arrQValue[16])  # (mV)
                     airQ['SO2_OP2'] = int(arrQValue[17])  # (mV)
 
+                    print('2--airQ: ', airQ)
                     data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
                     airQ = json.dumps(airQ)
                     send_data_to_msw(data_topic, airQ)
