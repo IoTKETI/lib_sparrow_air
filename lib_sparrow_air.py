@@ -166,7 +166,7 @@ def missionPortData():
     global airQ
 
     flag = 0
-    airReqMessage(missionPort)
+    airReqMessage()
     count = 0
     while True:
         missionStr = missionPort.readlines()
@@ -180,11 +180,11 @@ def missionPortData():
                         pass
                     else:
                         count = 0
-                        airReqMessage(missionPort)
+                        airReqMessage()
                         flag = 0
 
                 else:
-                    airReqMessage(missionPort)
+                    airReqMessage()
                     flag = 0
 
             else:
@@ -284,7 +284,7 @@ def missionPortData():
 
         except (ValueError, IndexError):
             airQ_init()
-            airReqMessage(missionPort)
+            airReqMessage()
             pass
 
         except serial.SerialException as e:
