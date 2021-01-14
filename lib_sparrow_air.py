@@ -105,7 +105,7 @@ def missionPortOpening(missionPortNum, missionBaudrate):
             missionPort = serial.Serial(missionPortNum, missionBaudrate, timeout=2)
             print('missionPort open. ' + missionPortNum + ' Data rate: ' + missionBaudrate)
             mission_thread = threading.Thread(
-                target=missionPortData, args=(missionPort,)
+                target=missionPortData,
             )
             mission_thread.start()
 
