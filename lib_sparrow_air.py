@@ -61,16 +61,16 @@ def on_subscribe(client, userdata, mid, granted_qos):
 
 def on_message(client, userdata, msg):
     global missionPort
-    global gun_event
+    global air_event
     global data_topic
     global control_topic
 
     message = str(msg.payload.decode("utf-8"))
     if msg.topic == control_topic:####################
         print ('call on_receive_from_msw function')
-        gun_event |= CONTROL_E
+        air_event |= CONTROL_E
     else:
-        gun_event |= DATA_E
+        air_event |= DATA_E
 
     
 
