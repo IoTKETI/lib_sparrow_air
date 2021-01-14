@@ -64,7 +64,6 @@ def on_message(client, userdata, msg):
 
     message = str(msg.payload.decode("utf-8"))
     if (message == 'G'):
-        print('call on_receive_from_msw function')
         on_receive_from_msw(message)
 
 
