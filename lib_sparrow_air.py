@@ -252,7 +252,7 @@ def main():
 
     try:
         lib = dict()
-        with open('./' + my_lib_name + '/' + my_lib_name + '.json', 'r') as f:
+        with open('./' + my_msw_name + '/' + my_lib_name + '.json', 'r') as f:
             lib = json.load(f)
             lib = json.loads(lib)
 
@@ -267,7 +267,7 @@ def main():
         lib = json.dumps(lib, indent=4)
         lib = json.loads(lib)
 
-        with open('./' + my_lib_name + '/' + my_lib_name + '.json', 'w', encoding='utf-8') as json_file:
+        with open('./' + my_msw_name + '/' + my_lib_name + '.json', 'w', encoding='utf-8') as json_file:
             json.dump(lib, json_file, indent=4)
 
     lib['serialPortNum'] = argv[1]
