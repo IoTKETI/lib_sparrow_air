@@ -1,5 +1,10 @@
 #!/usr/bin/python3
-import json, sys, serial, threading, time, os, signal
+import json
+import sys
+import serial
+import threading
+import os
+import signal
 import paho.mqtt.client as mqtt
 
 i_pid = os.getpid()
@@ -19,6 +24,8 @@ con = ''
 
 broker_ip = 'localhost'
 port = 1883
+flag = 0
+
 
 def airQ_init():
     airQ['PM25'] = 0.0  # (ug/m3)
@@ -63,12 +70,13 @@ def on_message(client, userdata, msg):
     global control_topic
 
     message = str(msg.payload.decode("utf-8"))
-    if (message == 'G'):
+    if message == 'G':
         on_receive_from_msw(message)
 
 
 def on_receive_from_msw(str_message):
     global missionPort
+    global flag
 
     if missionPort is not None:
         if missionPort.is_open:
@@ -99,7 +107,7 @@ def missionPortOpening(missionPortNum, missionBaudrate):
     global airQ
     global missionPort
 
-    if (missionPort == None):
+    if missionPort == None:
         try:
             missionPort = serial.Serial(missionPortNum, missionBaudrate, timeout=2)
             print('missionPort open. ' + missionPortNum + ' Data rate: ' + missionBaudrate)
@@ -111,7 +119,7 @@ def missionPortOpening(missionPortNum, missionBaudrate):
         except TypeError as e:
             missionPortClose()
     else:
-        if (missionPort.is_open == False):
+        if missionPort.is_open == False:
             missionPortOpen()
 
             send_data_to_msw(airQ)
@@ -155,6 +163,7 @@ def missionPortData():
     global airQ
     global data_topic
     global control_topic
+    global flag
 
     flag = 0
     airReqMessage()
@@ -163,9 +172,9 @@ def missionPortData():
         missionStr = missionPort.readlines()
         try:
             # if ((not missionStr) or (missionStr[0] == b'\x00\n') or (len(missionStr) < 3)):
-            if ((not missionStr) or (missionStr[0] == b'\x00\n')):
-                if (not missionStr):
-                    if (count < 5):
+            if (not missionStr) or (missionStr[0] == b'\x00\n'):
+                if not missionStr:
+                    if count < 5:
                         count += 1
                         pass
                     else:
@@ -178,7 +187,7 @@ def missionPortData():
                     flag = 0
 
             else:
-                if (flag == 0):
+                if flag == 0:
                     flag = 1
                     arrAIRQ = missionStr[3].decode("utf-8").replace(" ", "")
                     arrQValue = arrAIRQ.split(',')
@@ -239,6 +248,7 @@ def missionPortData():
         except serial.SerialException as e:
             missionPortError(e)
 
+
 def main():
     global lib_mqtt_client
     global control_topic
@@ -256,7 +266,7 @@ def main():
             lib = json.load(f)
             lib = json.loads(lib)
 
-    except:
+    except Exception as e:
         lib = dict()
         lib["name"] = my_lib_name
         lib["target"] = 'armv6'
