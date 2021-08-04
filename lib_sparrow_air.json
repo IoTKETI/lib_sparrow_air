@@ -7,6 +7,6 @@
         "AIR"
     ],
     "control": [
-        "Control_AIR", "Req_AIR"
+        "Control_AIR"
     ]
 }
